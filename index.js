@@ -168,7 +168,17 @@ app.get('/getFoodList',async (req,resp)=>{
     let data=await FoodList.find();
     resp.send(data);
 })
-app.listen(3001)
+
+
+// if(process.env.NODE_ENV == "production")
+// {
+//     app.use(express.static("MERN-master/build"))
+// }
+
+  app.listen(process.env.PORT || 3001)
+// app.listen(3001)
+
+
 
 
 
