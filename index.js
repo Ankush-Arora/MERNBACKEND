@@ -17,7 +17,7 @@ const router=express.Router();
 app.use(express.json());
 
 app.use(cors());
-<<<<<<< HEAD
+ 
 
 
 app.post('/addUser',[
@@ -38,7 +38,7 @@ app.post('/addUser',[
      await data.save();
     resp.send({userCreated:true});
 })
-=======
+ 
  
 app.use('/',require("./AddOrder"));
 app.use('/',require("./AddNewUser"));
@@ -61,7 +61,7 @@ app.use('/',require("./AddNewUser"));
 //      await data.save();
 //     resp.send({userCreated:true});
 // })
->>>>>>> 6fa41d7 (Some new Api added)
+ 
 
 app.use('/',require("./AddOrder"));
 app.use('/',require("./AddNewUser"));
@@ -123,8 +123,8 @@ app.post('/userLogin',[
                     id:userData.id
                 }
             }
-            const authToken=jwt.sign(data,jwtSecret)
-            return resp.json({authToken:authToken,success:true,userLogin:'successfully'})
+            const authToken=jwt.sign({data},jwtSecret,{expiresIn:"24h"})
+            return resp.json({data,authToken:authToken,success:true,userLogin:'successfully'})
     }
     catch(error)
     {
@@ -174,6 +174,28 @@ app.get('/getFoodList',async (req,resp)=>{
 // {
 //     app.use(express.static("MERN-master/build"))
 // }
+
+function verifyToken(req,resp,next)
+{
+    let token=req.headers['authorization'];
+    console.log("Verify",token)
+    if(token)
+    {
+        jwt.verify(token,jwtSecret,(err,valid)=>{
+            if(err)
+            {
+                resp.status(401).send({result:"Invalid token"})
+            }
+            else 
+            {
+                next();
+            }
+        })
+    }
+    else{
+            resp.status(403).send({result:"Please add token with header"})
+    }
+}
 
   app.listen(process.env.PORT || 3001)
 // app.listen(3001)

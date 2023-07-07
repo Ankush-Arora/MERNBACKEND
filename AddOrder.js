@@ -3,6 +3,8 @@ const router=express.Router();
 const Order=require('./Orders')
 const cors=require('cors')
 const app=express();
+const jwt=require('jsonwebtoken')
+const jwtSecret="MadanMohanPant"
 
 app.use(cors());
 router.post('/newOrder',async (req,resp)=>{
@@ -13,7 +15,7 @@ router.post('/newOrder',async (req,resp)=>{
 
     //if email not exist in db then create else insert many
     let eId=await Order.findOne({'email':req.body.email})
-    console.log('First line ',eId);
+    // console.log('First line ',eId);
 
     if((eId === null))
     {
@@ -49,7 +51,7 @@ router.post('/newOrder',async (req,resp)=>{
         }
 })
 
-router.post('/myOrders',async(req,resp)=>{
+router.post('/myOrders',verifyToken,async(req,resp)=>{
 
     try{
             let myData=await Order.findOne({"email":req.body.email})
@@ -61,4 +63,26 @@ router.post('/myOrders',async(req,resp)=>{
     }
 
 })
+
+function verifyToken(req,resp,next)
+{
+    let token=req.headers['authorization'];
+    console.log("Verify",token)
+    if(token)
+    {
+        jwt.verify(token,jwtSecret,(err,valid)=>{
+            if(err)
+            {
+                resp.status(401).send({result:"Invalid token"})
+            }
+            else 
+            {
+                next();
+            }
+        })
+    }
+    else{
+            resp.status(403).send({result:"Please add token with header"})
+    }
+}
 module.exports=router;

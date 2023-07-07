@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-// mongoose.connect('mongodb://localhost:27017/foodify')
+//  mongoose.connect('mongodb://localhost:27017/foodify')
 
 const DB='mongodb+srv://ankusharora1155:ankush123@cluster0.m5gnngj.mongodb.net/mernstack?retryWrites=true&w=majority'
 
